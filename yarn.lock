@@ -1504,6 +1504,14 @@
 "@types/prop-types@*":
   version "15.7.12"
 
+"@types/react-native-simple-radio-button@^2.7.7":
+  version "2.7.7"
+  resolved "https://registry.npmmirror.com/@types/react-native-simple-radio-button/-/react-native-simple-radio-button-2.7.7.tgz"
+  integrity sha512-cDDpMb+MyYDrZmQX/phRdpbW4SJynTv165MWkwjqa39jbuSkMAxuvBdiTCTBTiugikPRvQRFBG1wPRF/+0Lprw==
+  dependencies:
+    "@types/react" "*"
+    react-native "*"
+
 "@types/react-test-renderer@^18.0.0":
   version "18.3.0"
   dependencies:
@@ -4293,6 +4301,11 @@ react-native-image-picker@^7.1.2:
   version "7.1.2"
   resolved "https://registry.npmmirror.com/react-native-image-picker/-/react-native-image-picker-7.1.2.tgz"
   integrity sha512-b5y5nP60RIPxlAXlptn2QwlIuZWCUDWa/YPUVjgHc0Ih60mRiOg1PSzf0IjHSLeOZShCpirpvSPGnDExIpTRUg==
+
+react-native-simple-radio-button@^2.7.4:
+  version "2.7.4"
+  resolved "https://registry.npmmirror.com/react-native-simple-radio-button/-/react-native-simple-radio-button-2.7.4.tgz"
+  integrity sha512-QOZNmJUn0ViBGU+at7wAG/uGzd5PfXi0kMHr9lfTCLXknW/f9f2fOVjxjdHvOCdf/zA/eMJBjGjtusSDzQf1+w==
 
 react-native-svg@^15.6.0:
   version "15.6.0"

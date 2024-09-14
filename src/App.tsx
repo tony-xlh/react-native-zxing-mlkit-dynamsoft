@@ -3,17 +3,35 @@ import { Button, SafeAreaView, StyleSheet, Switch, Text, View } from 'react-nati
 import BarcodeScanner from './components/BarcodeScanner';
 import { decodeBase64, type Result } from 'vision-camera-zxing';
 import {launchImageLibrary, type ImageLibraryOptions} from 'react-native-image-picker';
+import RadioForm from 'react-native-simple-radio-button';
 
 const Separator = () => (
   <View style={styles.separator} />
 );
 
+const radio_props = [
+  {label: 'ZXing', value: 0 },
+  {label: 'MLKit', value: 1 },
+  {label: 'Dynamsoft', value: 2 }
+];
+
 export default function App() {
   const [useCamera,setUseCamera] = React.useState(false);
   const [continuous, setContinuous] = React.useState(false);
   const [barcodeResults, setBarcodeResults] = React.useState([] as Result[]);
+  const [selectedEngine, setSelectedEngine] = React.useState("ZXing");
   const toggleSwitch = () => setContinuous(previousState => !previousState);
   
+  const updateEngine = (value:number) => {
+    if (value === 0) {
+      setSelectedEngine("ZXing");
+    }else if (value === 1) {
+      setSelectedEngine("MLKit");
+    }else{
+      setSelectedEngine("Dynamsoft");
+    }
+  }
+
   const onScanned = (results:Result[]) => {
     setBarcodeResults(results);
     if (results.length>0 && !continuous) {
@@ -42,7 +60,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       {useCamera && (
         <>
-          <BarcodeScanner onScanned={onScanned}></BarcodeScanner>
+          <BarcodeScanner onScanned={onScanned} engine={selectedEngine}></BarcodeScanner>
           <View
             style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-end', alignItems: 'center'}}
           >
@@ -81,6 +99,14 @@ export default function App() {
             <Button
               title="Read Barcodes from the Album"
               onPress={() => decodeFromAlbum()}
+            />
+            <Separator />
+            <RadioForm
+              radio_props={radio_props}
+              initial={0}
+              formHorizontal={true}
+              labelHorizontal={false}
+              onPress={(value) => {updateEngine(value)}}
             />
             <Separator />
             {barcodeResults.map((barcode, idx) => (

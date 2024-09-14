@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
-import { Camera, runAsync, useCameraDevice, useCameraFormat, useFrameProcessor, type Orientation } from 'react-native-vision-camera';
+import { Camera, Point, runAsync, useCameraDevice, useCameraFormat, useFrameProcessor, type Orientation } from 'react-native-vision-camera';
 import { zxing, type Result } from 'vision-camera-zxing';
-import { Worklets } from 'react-native-worklets-core';
+import { useSharedValue, Worklets } from 'react-native-worklets-core';
 import { Polygon, Svg, Text as SVGText } from 'react-native-svg';
+import { decode, TextResult } from 'vision-camera-dynamsoft-barcode-reader';
+import { useBarcodeScanner } from "react-native-vision-camera-barcodes-scanner";
+import { Barcode } from 'react-native-vision-camera-barcodes-scanner/lib/typescript/src/types';
+
 interface props {
+  engine: string;
   onScanned?: (result:Result[]) => void;
 }
 
@@ -13,7 +18,9 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
   const [isActive, setIsActive] = React.useState(false);
   const [viewBox, setViewBox] = React.useState("0 0 720 1280");
   const [barcodeResults, setBarcodeResults] = React.useState([] as Result[]);
+  const engine = useSharedValue("ZXing");
   const device = useCameraDevice("back");
+  const {scanBarcodes} = useBarcodeScanner();
   const cameraFormat = useCameraFormat(device, [
     { videoResolution: { width: 1280, height: 720 } },
     { fps: 60 }
@@ -40,19 +47,65 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
       setViewBox("0 0 "+frameWidth+" "+frameHeight);
     }
     const converted:Result[] = [];
-    for (let index = 0; index < keys.length; index++) {
-      const key = keys[index];
-      if (key) {
-        const result = results[key] as Result;
-        if (rotated) {
-          rotatePoints(result,frameWidth,frameHeight,orientation);
+    if (engine.value === "ZXing") {
+      for (let index = 0; index < keys.length; index++) {
+        const key = keys[index];
+        if (key) {
+          const result = results[key] as Result;
+          if (rotated) {
+            rotatePoints(result,frameWidth,frameHeight,orientation);
+          }
+          converted.push(result);
         }
-        converted.push(result);
+      }
+    }else if (engine.value === "MLKit") {
+      for (let index = 0; index < keys.length; index++) {
+        const key = keys[index];
+        if (key) {
+          const barcode = results[key] as Barcode;
+          const points:Point[] = [];
+          points.push({x:barcode.left,y:barcode.top});
+          points.push({x:barcode.right,y:barcode.top});
+          points.push({x:barcode.right,y:barcode.bottom});
+          points.push({x:barcode.left,y:barcode.bottom});
+          const result:Result = {
+            barcodeText:barcode.rawValue,
+            barcodeFormat:"",
+            barcodeBytesBase64:"",
+            points:points
+          }
+          converted.push(result);
+        }
+      }
+    }else if (engine.value === "Dynamsoft") {
+      for (let index = 0; index < keys.length; index++) {
+        const key = keys[index];
+        if (key) {
+          const tr = results[key] as TextResult;
+          const points:Point[] = [];
+          points.push({x:tr.x1,y:tr.y1});
+          points.push({x:tr.x2,y:tr.y2});
+          points.push({x:tr.x3,y:tr.y3});
+          points.push({x:tr.x4,y:tr.y4});
+          const result:Result = {
+            barcodeText:tr.barcodeText,
+            barcodeFormat:tr.barcodeFormat,
+            barcodeBytesBase64:tr.barcodeBytesBase64,
+            points:points
+          }
+          converted.push(result);
+        }
       }
     }
+    
     setBarcodeResults(converted);
   }
   const convertAndSetResultsJS = Worklets.createRunOnJS(convertAndSetResults);
+  
+  React.useEffect(() => {
+    engine.value = props.engine;
+  },[props.engine])
+
   React.useEffect(() => {
     if (props.onScanned && barcodeResults.length>0) {
       props.onScanned(barcodeResults);
@@ -79,9 +132,20 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
     'worklet'
     runAsync(frame, () => {
       'worklet'
-      const results = zxing(frame,{multiple:true});
+      let results;
+      if (engine.value === "ZXing") {
+        results = zxing(frame,{multiple:true});
+      }else if (engine.value === "Dynamsoft") {
+        results = decode(frame);
+      }else{
+        results = scanBarcodes(frame);
+      }
+      
       console.log(results);
-      convertAndSetResultsJS(results,frame.width,frame.height,frame.orientation);
+      if (results) {
+        convertAndSetResultsJS(results as Record<string,object>,frame.width,frame.height,frame.orientation);
+      }
+      
     })
   }, [])
 
