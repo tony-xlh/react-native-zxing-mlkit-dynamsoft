@@ -5,6 +5,8 @@ import { decodeBase64, type Result } from 'vision-camera-zxing';
 import {launchImageLibrary, type ImageLibraryOptions} from 'react-native-image-picker';
 import RadioForm from 'react-native-simple-radio-button';
 import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
+import { Point } from 'react-native-vision-camera';
+import { ImageScanner } from "react-native-vision-camera-barcodes-scanner";
 
 const Separator = () => (
   <View style={styles.separator} />
@@ -54,11 +56,55 @@ export default function App() {
     }
     let response = await launchImageLibrary(options);
     if (response && response.assets) {
-      if (response.assets[0]!.base64) {
-        console.log(response.assets[0]!.base64);
-        let results = await decodeBase64(response.assets[0]!.base64,{multiple:true});
-        console.log(results);
-        setBarcodeResults(results);
+      if (selectedEngine != "MLKit") {
+        if (response.assets[0]!.base64) {
+          if (selectedEngine === "Dynamsoft") {
+            let textResults = await DBR.decodeBase64(response.assets[0]!.base64);
+            let results = [];
+            for (let index = 0; index < textResults.length; index++) {
+              const tr = textResults[index];
+              const points:Point[] = [];
+              points.push({x:tr.x1,y:tr.y1});
+              points.push({x:tr.x2,y:tr.y2});
+              points.push({x:tr.x3,y:tr.y3});
+              points.push({x:tr.x4,y:tr.y4});
+              const result:Result = {
+                barcodeText:tr.barcodeText,
+                barcodeFormat:tr.barcodeFormat,
+                barcodeBytesBase64:tr.barcodeBytesBase64,
+                points:points
+              }
+              results.push(result);
+            }
+            setBarcodeResults(results);
+          }else{
+            let results = await decodeBase64(response.assets[0]!.base64,{multiple:true});
+            setBarcodeResults(results);
+          }
+        }
+      }else{
+        if (response && response.assets[0] && response.assets[0].uri) {
+          const uri = response.assets[0].uri as string;
+          let results = [];
+          //@ts-ignore
+          const barcodes = await ImageScanner({uri:uri});
+          for (let index = 0; index < barcodes.length; index++) {
+            const barcode = barcodes[index];
+            const points:Point[] = [];
+            points.push({x:barcode.left,y:barcode.top});
+            points.push({x:barcode.right,y:barcode.top});
+            points.push({x:barcode.right,y:barcode.bottom});
+            points.push({x:barcode.left,y:barcode.bottom});
+            const result:Result = {
+              barcodeText:barcode.rawValue,
+              barcodeFormat:"",
+              barcodeBytesBase64:"",
+              points:points
+            }
+            results.push(result);
+          }
+          setBarcodeResults(results);
+        }
       }
     }
   }
