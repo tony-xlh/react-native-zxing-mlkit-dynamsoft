@@ -4,6 +4,7 @@ import BarcodeScanner from './components/BarcodeScanner';
 import { decodeBase64, type Result } from 'vision-camera-zxing';
 import {launchImageLibrary, type ImageLibraryOptions} from 'react-native-image-picker';
 import RadioForm from 'react-native-simple-radio-button';
+import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
 
 const Separator = () => (
   <View style={styles.separator} />
@@ -21,7 +22,14 @@ export default function App() {
   const [barcodeResults, setBarcodeResults] = React.useState([] as Result[]);
   const [selectedEngine, setSelectedEngine] = React.useState("ZXing");
   const toggleSwitch = () => setContinuous(previousState => !previousState);
-  
+
+  React.useEffect(() => {
+    (async () => {
+      const result = await DBR.initLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
+      console.log(result);
+    })();
+  }, []);
+
   const updateEngine = (value:number) => {
     if (value === 0) {
       setSelectedEngine("ZXing");
@@ -75,7 +83,7 @@ export default function App() {
       {!useCamera &&(
           <View style={{alignItems:"center"}}>
             <Text style={styles.title}>
-              ZXing Demo
+              ZXing, MLKit, Dynamsoft Demo
             </Text>
             <Button
               title="Read Barcodes from the Camera"
