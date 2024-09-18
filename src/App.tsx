@@ -7,6 +7,7 @@ import RadioForm from 'react-native-simple-radio-button';
 import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
 import { Point } from 'react-native-vision-camera';
 import { ImageScanner } from "react-native-vision-camera-barcodes-scanner";
+import { readRate, speed } from './Templates';
 
 const Separator = () => (
   <View style={styles.separator} />
@@ -30,6 +31,7 @@ export default function App() {
     (async () => {
       const result = await DBR.initLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
       console.log(result);
+      await DBR.initRuntimeSettingsFromString(speed);
     })();
   }, []);
 
