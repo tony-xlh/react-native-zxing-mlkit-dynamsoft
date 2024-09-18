@@ -26,6 +26,7 @@ const templates_radio_props = [
 
 export default function App() {
   const initialValue = React.useRef(0);
+  const initialTemplateValue = React.useRef(0);
   const [useCamera,setUseCamera] = React.useState(false);
   const [continuous, setContinuous] = React.useState(false);
   const [barcodeResults, setBarcodeResults] = React.useState([] as Result[]);
@@ -52,6 +53,7 @@ export default function App() {
   }
 
   const updateTemplate = (value:number) => {
+    initialTemplateValue.current = value;
     if (value === 0) {
       DBR.initRuntimeSettingsFromString(speed);
     }else{
@@ -184,7 +186,7 @@ export default function App() {
               <>
                 <RadioForm
                   radio_props={templates_radio_props}
-                  initial={0}
+                  initial={initialTemplateValue.current}
                   formHorizontal={true}
                   labelHorizontal={false}
                   onPress={(value) => {updateTemplate(value)}}
@@ -194,11 +196,9 @@ export default function App() {
             )}
             <ScrollView style={styles.scrollView}>
             {barcodeResults.map((barcode, idx) => (
-              
               <Text key={"barcode"+idx}>
-                {barcode.barcodeFormat+": "+barcode.barcodeText}
+                {barcode.barcodeFormat + (barcode.barcodeFormat ? ": " : "") + barcode.barcodeText}
               </Text>
-              
             ))}
             </ScrollView>
           </View>
