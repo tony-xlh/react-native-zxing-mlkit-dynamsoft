@@ -1,4 +1,53 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# react-native-zxing-mlkit-dynamsoft
+
+A React Native barcode scanner demo using Vision Camera, ZXing, Google ML Kit and Dynamsoft Barcode Reader.
+
+The demo can read barcodes from cameras or from an album image.
+
+It is mainly used for comparing the different barcode reading SDKs:
+
+* [ZXing](http://github.com/zxing/zxing/): an open-source library with basic barcode reading features
+* [MLKit](https://developers.google.com/ml-kit/vision/barcode-scanning/android): a free library by Google
+* [Dynamsoft Barcode Reader](http://www.dynamsoft.com/barcode-reader/overview/): an enterprise-grade SDK by Dynamsoft
+
+If the license for Dynamsoft Barcode Reader expires, you can apply for one [here](https://www.dynamsoft.com/customer/license/trialLicense/).
+
+## Comparison
+
+### Barcode Formats
+
+| ZXing       | MLKit       | Dynamsoft          |
+|-------------|-------------|--------------------|
+| UPC-A       | UPC-A       | UPC-A              |
+| UPC-E       | UPC-E       | UPC-E              |
+| EAN-8       | EAN-8       | EAN-8              |
+| EAN-13      | EAN-13      | EAN-13             |
+| Code 39     | Code 39     | Code 39            |
+| Code 93     | Code 93     | Code 93            |
+| ITF         | ITF         | ITF                |
+| Codabar     | Codabar     | Codabar            |
+| QR Code     | QR Code     | QR Code            |
+| Aztec       | Aztec       | Aztec              |
+| Data Matrix | Data Matrix | Data Matrix        |
+| PDF417      | PDF417      | PDF417             |
+| Maxicode    |             | Maxicode           |
+| RSS-14      |             | RSS-14             |
+|             |             | Code 11            |
+|             |             | Interleaved 2 of 5 |
+|             |             | Industrial 2 of 5  |
+|             |             | GS1 DataBar        |
+|             |             | GS1 Composite Code |
+|             |             | DotCode            |
+|             |             | Pharmacode         |
+|             |             | Patch Code         |
+
+### Reading Angle
+
+Dynamsoft Barcode Reader and MLKit can read barcodes in any angle while ZXing has a limitation. You must align the barcode with the camera to read it.
+
+### Inverted
+
+Only Dynamsoft Barcode Reader can read inverted images.
 
 # Getting Started
 
