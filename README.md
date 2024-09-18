@@ -49,6 +49,26 @@ Dynamsoft Barcode Reader and MLKit can read barcodes in any angle while ZXing ha
 
 Only Dynamsoft Barcode Reader can read inverted images in all barcode formats.
 
+### Sample Images
+
+| Type | Image     | ZXing       | MLKit       | Dynamsoft          |
+|------|-------------|-------------|-------------|--------------------|
+|  Inverted  |    ![inverted](https://github.com/user-attachments/assets/7860a4ac-d128-4ac2-9e0e-c74f66b2d89e) | ×           | √           | √                  |
+| overexposured  |  <img width="159" alt="overexposured" src="https://github.com/user-attachments/assets/e345e235-8ead-4fcf-8b23-d909e9a36f9a">  | ×           | √           | √                  |
+| intermittent  |  ![intermittent](https://github.com/user-attachments/assets/d0579f0e-db96-48b7-8e3a-8cbe4e36762a)
+ | ×           | ×           | √                  |
+| zero quietzone  |  ![zero-quietzone](https://github.com/user-attachments/assets/b82d280c-6a9c-4823-ab34-64e9e203989a)
+
+ | ×           | ×           | √                  |
+ | curved  |  ![curled](https://github.com/user-attachments/assets/e0d47b5c-8696-4dd1-9e00-79d2f46b93bc)
+
+
+ | ×           | ×           | √                  |
+ | damaged.jpg  |  ![damaged](https://github.com/user-attachments/assets/26d3fb26-160c-4bd5-b217-a3363c88fafb)
+
+
+ | ×           | √           | √                  |
+
 # Getting Started
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
