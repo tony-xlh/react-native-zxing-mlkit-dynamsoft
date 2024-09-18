@@ -1,19 +1,25 @@
 import * as React from 'react';
-import { Dimensions, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet, Switch, Text, View } from 'react-native';
 import { Camera, Point, runAsync, useCameraDevice, useCameraFormat, useFrameProcessor, type Orientation } from 'react-native-vision-camera';
 import { zxing, type Result } from 'vision-camera-zxing';
 import { useSharedValue, Worklets } from 'react-native-worklets-core';
-import { Polygon, Svg, Text as SVGText } from 'react-native-svg';
+import { Polygon, Rect, Svg, Text as SVGText } from 'react-native-svg';
 import { decode, TextResult } from 'vision-camera-dynamsoft-barcode-reader';
+import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
 import { useBarcodeScanner } from "react-native-vision-camera-barcodes-scanner";
 import { Barcode } from 'react-native-vision-camera-barcodes-scanner/lib/typescript/src/types';
+import * as Templates from "../Templates";
 
 interface props {
   engine: string;
+  DBRTemplate: "Speed Mode"|"Read Rate Mode";
   onScanned?: (result:Result[]) => void;
 }
 
 const BarcodeScanner: React.FC<props> = (props: props) => {
+  const regionEnabledShared = useSharedValue(false);
+  const [regionEnabled, setRegionEnabled] = React.useState(false);
+  const [torchEnabled, setTorchEnabled] = React.useState(false);
   const [hasPermission, setHasPermission] = React.useState(false);
   const [isActive, setIsActive] = React.useState(false);
   const [viewBox, setViewBox] = React.useState("0 0 720 1280");
@@ -155,6 +161,14 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
       setHasPermission(status === 'granted');
       setIsActive(true);
     })();
+    return () => {
+      //reset template
+      if (props.DBRTemplate === "Speed Mode") {
+        DBR.initRuntimeSettingsFromString(Templates.speed);
+      }else{
+        DBR.initRuntimeSettingsFromString(Templates.readRate);
+      }
+    }
   }, []);
 
   const getPointsData = (lr:Result) => {
@@ -166,7 +180,30 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
     }
     return pointsData.trim();
   }
-  
+
+  const toggleScanRegion = async (newValue:boolean) => {
+    if (newValue) {
+      if (props.DBRTemplate === "Speed Mode") {
+        await DBR.initRuntimeSettingsFromString(Templates.templateWithScanRegion(Templates.speed));
+      }else{
+        await DBR.initRuntimeSettingsFromString(Templates.templateWithScanRegion(Templates.readRate));
+      }
+    }else{
+      if (props.DBRTemplate === "Speed Mode") {
+        await DBR.initRuntimeSettingsFromString(Templates.speed);
+      }else{
+        await DBR.initRuntimeSettingsFromString(Templates.readRate);
+      }
+    }
+    regionEnabledShared.value = newValue;
+    setRegionEnabled(newValue);
+  }
+
+  const getFrameSize = () => {
+    const width = parseInt(viewBox.split(" ")[2]);
+    const height = parseInt(viewBox.split(" ")[3]);
+    return [width,height];
+  }
   
   return (
       <>
@@ -185,6 +222,16 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
             <Svg style={StyleSheet.absoluteFill} 
               preserveAspectRatio="xMidYMid slice"
               viewBox={viewBox}>
+              {regionEnabled &&
+              <Rect 
+                x={0.1*getFrameSize()[0]}
+                y={0.2*getFrameSize()[1]}
+                width={0.8*getFrameSize()[0]}
+                height={0.45*getFrameSize()[1]}
+                strokeWidth="2"
+                stroke="red"
+                fillOpacity={0.0}
+              />}
               {barcodeResults.map((barcode, idx) => (
                 <Polygon key={"poly-"+idx}
                   points={getPointsData(barcode)}
@@ -208,6 +255,38 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
               ))}
             
             </Svg>
+            <View style={styles.control}>
+            <View style={{flex:0.8}}>
+              {props.engine === "Dynamsoft" &&(
+                <View style={styles.switchContainer}>
+                  <Text style={{alignSelf: "center", color: "black"}}>Scan Region</Text>
+                  <Switch
+                    style={{alignSelf: "center"}}
+                    trackColor={{ false: "#767577", true: "black" }}
+                    thumbColor={regionEnabled ? "white" : "#f4f3f4"}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={(newValue) => {
+                      toggleScanRegion(newValue);
+                    }}
+                    value={regionEnabled}
+                  />
+                </View>
+              )}
+              <View style={styles.switchContainer}>
+                <Text style={{alignSelf: "center", color: "black"}}>Torch</Text>
+                <Switch
+                  style={{alignSelf: "center"}}
+                  trackColor={{ false: "#767577", true: "black" }}
+                  thumbColor={torchEnabled ? "white" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={(newValue) => {
+                    setTorchEnabled(newValue);
+                  }}
+                  value={torchEnabled}
+                />
+              </View>
+            </View>
+          </View>
         </>)}
       </>
   );
@@ -220,5 +299,21 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     fontWeight: 'bold',
+  },
+  control:{
+    flexDirection:"row",
+    position: 'absolute',
+    bottom: 0,
+    height: "15%",
+    width:"100%",
+    alignSelf:"flex-start",
+    borderColor: "white",
+    borderWidth: 0.1,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    alignItems: 'center',
+  },
+  switchContainer: {
+    alignItems: 'flex-start',
+    flexDirection: "row",
   },
 });

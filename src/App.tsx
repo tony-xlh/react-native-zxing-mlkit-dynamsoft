@@ -28,6 +28,7 @@ export default function App() {
   const initialValue = React.useRef(0);
   const initialTemplateValue = React.useRef(0);
   const [useCamera,setUseCamera] = React.useState(false);
+  const [DBRTemplate,setDBRTemplate] = React.useState<"Speed Mode"|"Read Rate Mode">("Speed Mode");
   const [continuous, setContinuous] = React.useState(false);
   const [barcodeResults, setBarcodeResults] = React.useState([] as Result[]);
   const [selectedEngine, setSelectedEngine] = React.useState("ZXing");
@@ -55,8 +56,10 @@ export default function App() {
   const updateTemplate = (value:number) => {
     initialTemplateValue.current = value;
     if (value === 0) {
+      setDBRTemplate("Speed Mode");
       DBR.initRuntimeSettingsFromString(speed);
     }else{
+      setDBRTemplate("Read Rate Mode");
       DBR.initRuntimeSettingsFromString(readRate);
     }
   }
@@ -133,7 +136,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       {useCamera && (
         <>
-          <BarcodeScanner onScanned={onScanned} engine={selectedEngine}></BarcodeScanner>
+          <BarcodeScanner onScanned={onScanned} engine={selectedEngine} DBRTemplate={DBRTemplate}></BarcodeScanner>
           <View
             style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-end', alignItems: 'center'}}
           >

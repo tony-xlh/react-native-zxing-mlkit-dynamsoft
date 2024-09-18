@@ -192,3 +192,21 @@ export const speed = `
   }
 }
 `
+
+export const templateWithScanRegion = (content:string) => {
+  let settings = JSON.parse(content);
+  let left = 20;
+  let right = 65;
+  let top = 10;
+  let bottom = 90;
+  settings["ImageParameter"]["RegionDefinitionNameArray"] = ["Settings"];
+  settings["RegionDefinition"] = {
+                                  "Left": left,
+                                  "Right": right,
+                                  "Top": top,
+                                  "Bottom": bottom,
+                                  "MeasuredByPercentage": 1,
+                                  "Name": "Settings",
+                                };
+  return JSON.stringify(settings);
+}
