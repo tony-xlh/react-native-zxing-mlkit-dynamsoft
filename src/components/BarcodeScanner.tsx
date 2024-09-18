@@ -216,6 +216,7 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
             isActive={isActive}
             format={cameraFormat}
             frameProcessor={frameProcessor}
+            torch={torchEnabled ? "on" : "off"}
             resizeMode='contain'
             pixelFormat="yuv"
             />
