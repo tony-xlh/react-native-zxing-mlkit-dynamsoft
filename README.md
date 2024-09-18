@@ -59,8 +59,7 @@ Only Dynamsoft Barcode Reader can read inverted images in all barcode formats.
 | Zero quietzone  |  ![zero-quietzone](https://github.com/user-attachments/assets/b82d280c-6a9c-4823-ab34-64e9e203989a) | ×           | ×           | √                  |
  | Curved  |  ![curled](https://github.com/user-attachments/assets/e0d47b5c-8696-4dd1-9e00-79d2f46b93bc) | ×           | ×           | √                  |
  | Damaged  |  ![damaged](https://github.com/user-attachments/assets/26d3fb26-160c-4bd5-b217-a3363c88fafb) | ×           | √           | √                  |
- | Blurry  |  ![gs1-composite-inverted](https://github.com/user-attachments/assets/0126e9e2-408b-4fed-a6d0-be87ba3fbfc6)
-  | ×           | ×           | √                  |
+ | Blurry  |  ![gs1-composite-inverted](https://github.com/user-attachments/assets/0126e9e2-408b-4fed-a6d0-be87ba3fbfc6) | ×           | ×           | √                  |
 
 # Getting Started
 
