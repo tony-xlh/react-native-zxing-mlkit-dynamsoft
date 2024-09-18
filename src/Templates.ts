@@ -24,11 +24,6 @@ export const readRate = `
         "ThresholdCompensation": 10
       }
     ],
-    "DPMCodeReadingModes": [
-      {
-        "Mode": "DPMCRM_GENERAL"
-      }
-    ],
     "DeformationResistingModes": [
       {
         "Mode": "DRM_AUTO"
