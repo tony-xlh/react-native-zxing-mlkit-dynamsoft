@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Button, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import BarcodeScanner from './components/BarcodeScanner';
 import { decodeBase64, type Result } from 'vision-camera-zxing';
 import {launchImageLibrary, type ImageLibraryOptions} from 'react-native-image-picker';
@@ -38,6 +38,9 @@ export default function App() {
     (async () => {
       const result = await DBR.initLicense("DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==");
       console.log(result);
+      if (!result) {
+        Alert.alert("","License for Dynamsoft Barcode Reader is invalid");
+      }
       await DBR.initRuntimeSettingsFromString(speed);
     })();
   }, []);
