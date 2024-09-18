@@ -14,19 +14,14 @@ export const readRate = `
     ],
     "BinarizationModes": [
       {
-        "BlockSizeX": 61,
-        "BlockSizeY": 61,
+        "BlockSizeX": 0,
+        "BlockSizeY": 0,
         "EnableFillBinaryVacancy": 1,
         "ImagePreprocessingModesIndex": -1,
         "LibraryFileName": "",
         "LibraryParameters": "",
         "Mode": "BM_LOCAL_BLOCK",
         "ThresholdCompensation": 10
-      }
-    ],
-    "DPMCodeReadingModes": [
-      {
-        "Mode": "DPMCRM_GENERAL"
       }
     ],
     "DeformationResistingModes": [
@@ -107,7 +102,7 @@ export const readRate = `
         "Mode": "TDM_GENERAL_WIDTH_CONCENTRATION"
       }
     ],
-    "Timeout": 3000
+    "Timeout": 2000
   },
   "Version": "3.0",
   "FormatSpecification": {
