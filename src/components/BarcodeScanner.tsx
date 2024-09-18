@@ -136,7 +136,7 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
       if (engine.value === "ZXing") {
         results = zxing(frame,{multiple:true});
       }else if (engine.value === "Dynamsoft") {
-        results = decode(frame);
+        results = decode(frame,{rotateImage:false});
       }else{
         results = scanBarcodes(frame);
       }

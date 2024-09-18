@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, SafeAreaView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Button, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import BarcodeScanner from './components/BarcodeScanner';
 import { decodeBase64, type Result } from 'vision-camera-zxing';
 import {launchImageLibrary, type ImageLibraryOptions} from 'react-native-image-picker';
@@ -17,6 +17,11 @@ const radio_props = [
   {label: 'ZXing', value: 0 },
   {label: 'MLKit', value: 1 },
   {label: 'Dynamsoft', value: 2 }
+];
+
+const templates_radio_props = [
+  {label: 'Speed Mode', value: 0 },
+  {label: 'Read Rate Mode', value: 1 }
 ];
 
 export default function App() {
@@ -43,6 +48,14 @@ export default function App() {
       setSelectedEngine("MLKit");
     }else{
       setSelectedEngine("Dynamsoft");
+    }
+  }
+
+  const updateTemplate = (value:number) => {
+    if (value === 0) {
+      DBR.initRuntimeSettingsFromString(speed);
+    }else{
+      DBR.initRuntimeSettingsFromString(readRate);
     }
   }
 
@@ -167,11 +180,27 @@ export default function App() {
               onPress={(value) => {updateEngine(value)}}
             />
             <Separator />
+            {selectedEngine === "Dynamsoft" &&(
+              <>
+                <RadioForm
+                  radio_props={templates_radio_props}
+                  initial={0}
+                  formHorizontal={true}
+                  labelHorizontal={false}
+                  onPress={(value) => {updateTemplate(value)}}
+                />
+                <Separator />
+              </>
+            )}
+            <ScrollView style={styles.scrollView}>
             {barcodeResults.map((barcode, idx) => (
+              
               <Text key={"barcode"+idx}>
                 {barcode.barcodeFormat+": "+barcode.barcodeText}
               </Text>
+              
             ))}
+            </ScrollView>
           </View>
       )}
     </SafeAreaView>
@@ -192,6 +221,9 @@ const styles = StyleSheet.create({
   switchView: {
     alignItems: 'center',
     flexDirection: "row",
+  },
+  scrollView: {
+    width: '80%',
   },
   barcodeText: {
     fontSize: 20,

@@ -106,7 +106,8 @@ export const readRate = `
       {
         "Mode": "TDM_GENERAL_WIDTH_CONCENTRATION"
       }
-    ]
+    ],
+    "Timeout": 3000
   },
   "Version": "3.0",
   "FormatSpecification": {
@@ -151,7 +152,7 @@ export const speed = `
         "Mode": "DRM_SKIP"
       }
     ],
-    "ExpectedBarcodesCount": 1,
+    "ExpectedBarcodesCount": 0,
     "FormatSpecificationNameArray": [
       "default"
     ],
@@ -182,7 +183,8 @@ export const speed = `
       {
         "Mode": "TDM_GENERAL_WIDTH_CONCENTRATION"
       }
-    ]
+    ],
+    "Timeout": 3000
   },
   "Version": "3.0",
   "FormatSpecification": {
