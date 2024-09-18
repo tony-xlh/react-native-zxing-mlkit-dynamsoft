@@ -47,7 +47,7 @@ Dynamsoft Barcode Reader and MLKit can read barcodes in any angle while ZXing ha
 
 ### Inverted
 
-Only Dynamsoft Barcode Reader can read inverted images.
+Only Dynamsoft Barcode Reader can read inverted images in all barcode formats.
 
 # Getting Started
 
