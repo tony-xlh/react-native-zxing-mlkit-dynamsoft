@@ -19,6 +19,7 @@ const radio_props = [
 ];
 
 export default function App() {
+  const initialValue = React.useRef(0);
   const [useCamera,setUseCamera] = React.useState(false);
   const [continuous, setContinuous] = React.useState(false);
   const [barcodeResults, setBarcodeResults] = React.useState([] as Result[]);
@@ -33,6 +34,7 @@ export default function App() {
   }, []);
 
   const updateEngine = (value:number) => {
+    initialValue.current = value;
     if (value === 0) {
       setSelectedEngine("ZXing");
     }else if (value === 1) {
@@ -87,7 +89,7 @@ export default function App() {
           const uri = response.assets[0].uri as string;
           let results = [];
           //@ts-ignore
-          const barcodes = await ImageScanner({uri:uri});
+          const barcodes = await ImageScanner(uri);
           for (let index = 0; index < barcodes.length; index++) {
             const barcode = barcodes[index];
             const points:Point[] = [];
@@ -157,7 +159,7 @@ export default function App() {
             <Separator />
             <RadioForm
               radio_props={radio_props}
-              initial={0}
+              initial={initialValue.current}
               formHorizontal={true}
               labelHorizontal={false}
               onPress={(value) => {updateEngine(value)}}
