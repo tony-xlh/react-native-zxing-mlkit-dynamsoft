@@ -12,6 +12,8 @@ It is mainly used for comparing the different barcode reading SDKs:
 
 If the license for Dynamsoft Barcode Reader expires, you can apply for one [here](https://www.dynamsoft.com/customer/license/trialLicense/).
 
+[Sample APK](https://github.com/tony-xlh/react-native-zxing-mlkit-dynamsoft/releases/download/builds/app-debug.apk)
+
 ## Comparison
 
 ### Barcode Formats
