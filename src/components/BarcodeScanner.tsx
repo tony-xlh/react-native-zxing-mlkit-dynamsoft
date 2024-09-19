@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dimensions, StyleSheet, Switch, Text, View } from 'react-native';
+import { Dimensions, Platform, StyleSheet, Switch, Text, View } from 'react-native';
 import { Camera, Point, runAsync, useCameraDevice, useCameraFormat, useFrameProcessor, type Orientation } from 'react-native-vision-camera';
 import { zxing, type Result } from 'vision-camera-zxing';
 import { useSharedValue, Worklets } from 'react-native-worklets-core';
@@ -79,6 +79,9 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
             barcodeFormat:"",
             barcodeBytesBase64:"",
             points:points
+          }
+          if (rotated && Platform.OS === "ios") {
+            rotatePoints(result,frameWidth,frameHeight,orientation);
           }
           converted.push(result);
         }
