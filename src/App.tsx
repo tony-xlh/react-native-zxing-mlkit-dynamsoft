@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, Button, SafeAreaView, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Button, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import BarcodeScanner from './components/BarcodeScanner';
 import { decodeBase64, type Result } from 'vision-camera-zxing';
 import {launchImageLibrary, type ImageLibraryOptions} from 'react-native-image-picker';
@@ -8,6 +8,8 @@ import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
 import { Point } from 'react-native-vision-camera';
 import { ImageScanner } from "react-native-vision-camera-barcodes-scanner";
 import { readRate, speed } from './Templates';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Separator = () => (
   <View style={styles.separator} />
@@ -136,80 +138,82 @@ export default function App() {
 
 
   return (
-    <SafeAreaView style={styles.container}>
-      {useCamera && (
-        <>
-          <BarcodeScanner onScanned={onScanned} engine={selectedEngine} DBRTemplate={DBRTemplate}></BarcodeScanner>
-          <View
-            style={{position: 'absolute', left:100, right: 100, bottom: 0, justifyContent: 'flex-end', alignItems: 'center'}}
-          >
-            <Button
-              title="Close"
-              onPress={() => setUseCamera(false)}
-            />
-          </View>
-        </>
-        
-      )}
-      {!useCamera &&(
-          <View style={{alignItems:"center"}}>
-            <Text style={styles.title}>
-              ZXing, MLKit, Dynamsoft Demo
-            </Text>
-            <Button
-              title="Read Barcodes from the Camera"
-              onPress={() => setUseCamera(true)}
-            />
-            <Separator />
-            <View style={styles.switchView}>
-              <Text style={{alignSelf: 'center'}}>
-                Continues Scan
-              </Text>
-              <Switch 
-                style={{alignSelf: 'center'}}
-                trackColor={{ false: "#767577", true: "#81b0ff" }}
-                thumbColor={continuous ? "#f5dd4b" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={continuous}
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        {useCamera && (
+          <>
+            <BarcodeScanner onScanned={onScanned} engine={selectedEngine} DBRTemplate={DBRTemplate}></BarcodeScanner>
+            <View
+              style={{position: 'absolute', left:100, right: 100, bottom: 0, justifyContent: 'flex-end', alignItems: 'center'}}
+            >
+              <Button
+                title="Close"
+                onPress={() => setUseCamera(false)}
               />
             </View>
-            <Separator />
-            <Button
-              title="Read Barcodes from the Album"
-              onPress={() => decodeFromAlbum()}
-            />
-            <Separator />
-            <RadioForm
-              radio_props={radio_props}
-              initial={initialValue.current}
-              formHorizontal={true}
-              labelHorizontal={false}
-              onPress={(value) => {updateEngine(value)}}
-            />
-            <Separator />
-            {selectedEngine === "Dynamsoft" &&(
-              <>
-                <RadioForm
-                  radio_props={templates_radio_props}
-                  initial={initialTemplateValue.current}
-                  formHorizontal={true}
-                  labelHorizontal={false}
-                  onPress={(value) => {updateTemplate(value)}}
-                />
-                <Separator />
-              </>
-            )}
-            <ScrollView style={styles.scrollView}>
-            {barcodeResults.map((barcode, idx) => (
-              <Text key={"barcode"+idx}>
-                {barcode.barcodeFormat + (barcode.barcodeFormat ? ": " : "") + barcode.barcodeText}
+          </>
+          
+        )}
+        {!useCamera &&(
+            <View style={{alignItems:"center"}}>
+              <Text style={styles.title}>
+                ZXing, MLKit, Dynamsoft Demo
               </Text>
-            ))}
-            </ScrollView>
-          </View>
-      )}
-    </SafeAreaView>
+              <Button
+                title="Read Barcodes from the Camera"
+                onPress={() => setUseCamera(true)}
+              />
+              <Separator />
+              <View style={styles.switchView}>
+                <Text style={{alignSelf: 'center'}}>
+                  Continues Scan
+                </Text>
+                <Switch 
+                  style={{alignSelf: 'center'}}
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={continuous ? "#f5dd4b" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch}
+                  value={continuous}
+                />
+              </View>
+              <Separator />
+              <Button
+                title="Read Barcodes from the Album"
+                onPress={() => decodeFromAlbum()}
+              />
+              <Separator />
+              <RadioForm
+                radio_props={radio_props}
+                initial={initialValue.current}
+                formHorizontal={true}
+                labelHorizontal={false}
+                onPress={(value) => {updateEngine(value)}}
+              />
+              <Separator />
+              {selectedEngine === "Dynamsoft" &&(
+                <>
+                  <RadioForm
+                    radio_props={templates_radio_props}
+                    initial={initialTemplateValue.current}
+                    formHorizontal={true}
+                    labelHorizontal={false}
+                    onPress={(value) => {updateTemplate(value)}}
+                  />
+                  <Separator />
+                </>
+              )}
+              <ScrollView style={styles.scrollView}>
+              {barcodeResults.map((barcode, idx) => (
+                <Text key={"barcode"+idx}>
+                  {barcode.barcodeFormat + (barcode.barcodeFormat ? ": " : "") + barcode.barcodeText}
+                </Text>
+              ))}
+              </ScrollView>
+            </View>
+        )}
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
