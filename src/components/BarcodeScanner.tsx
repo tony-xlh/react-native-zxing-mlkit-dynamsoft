@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Dimensions, Platform, StyleSheet, Switch, Text, View } from 'react-native';
-import { Camera, Point, runAsync, useCameraDevice, useCameraFormat, useFrameProcessor, type Orientation } from 'react-native-vision-camera';
+import { Camera, Point, runAsync, runAtTargetFps, useCameraDevice, useCameraFormat, useFrameProcessor, type Orientation } from 'react-native-vision-camera';
 import { zxing, type Result } from 'vision-camera-zxing';
 import { useSharedValue, Worklets } from 'react-native-worklets-core';
 import { Polygon, Rect, Svg, Text as SVGText } from 'react-native-svg';
@@ -140,7 +140,7 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
 
   const frameProcessor = useFrameProcessor(frame => {
     'worklet'
-    runAsync(frame, () => {
+    runAtTargetFps(10, () => {
       'worklet'
       let results;
       if (engine.value === "ZXing") {
