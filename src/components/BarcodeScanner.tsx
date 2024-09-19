@@ -9,6 +9,7 @@ import * as DBR from 'vision-camera-dynamsoft-barcode-reader';
 import { useBarcodeScanner } from "react-native-vision-camera-barcodes-scanner";
 import { Barcode } from 'react-native-vision-camera-barcodes-scanner/lib/typescript/src/types';
 import * as Templates from "../Templates";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface props {
   engine: string;
@@ -209,7 +210,7 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
   }
   
   return (
-      <>
+      <SafeAreaView style={styles.container}>
         {device &&
         hasPermission && (
         <>
@@ -220,11 +221,11 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
             format={cameraFormat}
             frameProcessor={frameProcessor}
             torch={torchEnabled ? "on" : "off"}
-            resizeMode='contain'
+
             pixelFormat="yuv"
             />
             <Svg style={StyleSheet.absoluteFill} 
-              preserveAspectRatio="xMidYMid slice"
+
               viewBox={viewBox}>
               {regionEnabled &&
               <Rect 
@@ -292,13 +293,16 @@ const BarcodeScanner: React.FC<props> = (props: props) => {
             </View>
           </View>
         </>)}
-      </>
+      </SafeAreaView>
   );
 }
 
 export default BarcodeScanner;
 
 const styles = StyleSheet.create({
+  container: {
+    flex:1,
+  },
   barcodeText: {
     fontSize: 20,
     color: 'white',
