@@ -33,11 +33,10 @@ If the license for Dynamsoft Barcode Reader expires, you can apply for one [here
 | Data Matrix | Data Matrix | Data Matrix        |
 | PDF417      | PDF417      | PDF417             |
 | Maxicode    |             | Maxicode           |
-| RSS-14      |             | RSS-14             |
+| RSS-14 (GS1 DataBar)      |             | RSS-14 (GS1 DataBar)            |
 |             |             | Code 11            |
 |             |             | Interleaved 2 of 5 |
 |             |             | Industrial 2 of 5  |
-|             |             | GS1 DataBar        |
 |             |             | GS1 Composite Code |
 |             |             | DotCode            |
 |             |             | Pharmacode         |
